@@ -6,21 +6,18 @@
   var $ = function (s, c) { return (c || doc).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || doc).querySelectorAll(s)); };
 
-  /* ---------- Intro ---------- */
+  /* ---------- Intro (plays on every load and refresh) ---------- */
   var intro = $('#intro');
   var introDone = false;
   function endIntro(fast) {
     if (introDone) return;
     introDone = true;
-    try { sessionStorage.setItem('wgis-intro', '1'); } catch (e) {}
     if (fast) { intro.classList.add('gone'); doc.body.classList.remove('is-intro'); return; }
     intro.classList.add('hide');
     doc.body.classList.remove('is-intro');
     setTimeout(function () { intro.classList.add('gone'); }, 900);
   }
-  var seen = false;
-  try { seen = sessionStorage.getItem('wgis-intro') === '1'; } catch (e) {}
-  if (seen || reduce) {
+  if (reduce) {
     endIntro(true);
   } else {
     var nameEl = $('#introName');
@@ -45,6 +42,9 @@
     doc.addEventListener('keydown', function (e) { if (e.key === 'Escape') endIntro(false); });
     setTimeout(function () { endIntro(false); }, 3500);
   }
+  // Start every load at the top so the homepage reveals from the hero
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
 
   /* ---------- Nav ---------- */
   var nav = $('#nav'), burger = $('#burger');
